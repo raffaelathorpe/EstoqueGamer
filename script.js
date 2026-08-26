@@ -23,20 +23,186 @@ const valorEstoque =
 const btnCarregarAPI =
     document.getElementById("btnCarregarAPI");
 
+const btnTodos =
+    document.getElementById("btnTodos");
+
+const btnGamers =
+    document.getElementById("btnGamers");
+
+const btnTecnologia =
+    document.getElementById("btnTecnologia");
+
+const textoFiltro =
+    document.getElementById("textoFiltro");
+
 
 // ==========================================
-// CARREGANDO PRODUTOS DO LOCALSTORAGE
+// PRODUTOS SALVOS NO NAVEGADOR
 // ==========================================
 
 let produtos =
-    JSON.parse(localStorage.getItem("produtos")) || [];
+    JSON.parse(
+        localStorage.getItem("produtos")
+    ) || [];
+
+
+// ==========================================
+// FILTRO ATUAL
+// ==========================================
+
+let filtroAtual = "todos";
+
+
+// ==========================================
+// PALAVRAS DE PRODUTOS GAMERS
+// ==========================================
+
+const palavrasGamers = [
+
+    "gaming",
+    "gamer",
+    "game",
+    "mouse",
+    "keyboard",
+    "headphone",
+    "headset",
+    "controller",
+    "console",
+    "playstation",
+    "xbox",
+    "nintendo",
+    "joystick",
+    "gamepad",
+    "rgb"
+
+];
+
+
+// ==========================================
+// PALAVRAS DE TECNOLOGIA
+// ==========================================
+
+const palavrasTecnologia = [
+
+    "laptop",
+    "smartphone",
+    "phone",
+    "tablet",
+    "computer",
+    "pc",
+    "monitor",
+    "camera",
+    "watch",
+    "mobile",
+    "airpods",
+    "earbuds",
+    "charger",
+    "adapter",
+    "speaker",
+    "printer",
+    "keyboard",
+    "mouse",
+    "headphones"
+
+];
+
+
+// ==========================================
+// VERIFICAR SE É GAMER
+// ==========================================
+
+function ehProdutoGamer(produto) {
+
+    const texto = `
+
+        ${produto.title || ""}
+
+        ${produto.description || ""}
+
+        ${produto.category || ""}
+
+        ${produto.brand || ""}
+
+        ${(produto.tags || []).join(" ")}
+
+    `.toLowerCase();
+
+
+    return palavrasGamers.some(
+        function(palavra) {
+
+            return texto.includes(palavra);
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// VERIFICAR SE É TECNOLOGIA
+// ==========================================
+
+function ehProdutoTecnologia(produto) {
+
+    const texto = `
+
+        ${produto.title || ""}
+
+        ${produto.description || ""}
+
+        ${produto.category || ""}
+
+        ${produto.brand || ""}
+
+        ${(produto.tags || []).join(" ")}
+
+    `.toLowerCase();
+
+
+    return palavrasTecnologia.some(
+        function(palavra) {
+
+            return texto.includes(palavra);
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// DESCOBRIR A CATEGORIA
+// ==========================================
+
+function definirCategoria(produto) {
+
+    if (ehProdutoGamer(produto)) {
+
+        return "Gamers";
+
+    }
+
+
+    if (ehProdutoTecnologia(produto)) {
+
+        return "Tecnologia";
+
+    }
+
+
+    return "Outros";
+
+}
 
 
 // ==========================================
 // MOSTRAR PRODUTOS
 // ==========================================
 
-function mostrarProdutos(lista = produtos) {
+function mostrarProdutos(
+    lista = produtos
+) {
 
     listaProdutos.innerHTML = "";
 
@@ -45,116 +211,123 @@ function mostrarProdutos(lista = produtos) {
 
         listaProdutos.innerHTML = `
             <p class="sem-produtos">
-                Nenhum produto cadastrado.
+                Nenhum produto encontrado.
             </p>
         `;
 
         atualizarResumo();
 
         return;
+
     }
 
 
-    lista.forEach(function(produto) {
+    lista.forEach(
+        function(produto) {
 
-        const card =
-            document.createElement("div");
-
-        card.classList.add("produto");
-
-
-        // ==========================================
-        // AVISO DE ESTOQUE
-        // ==========================================
-
-        let avisoEstoque = "";
+            const card =
+                document.createElement("div");
 
 
-        if (produto.quantidade <= 5) {
+            card.classList.add(
+                "produto"
+            );
 
-            avisoEstoque = `
-                <p class="estoque-baixo">
-                    ⚠️ Estoque baixo
+
+            // ==========================================
+            // AVISO DE ESTOQUE
+            // ==========================================
+
+            let avisoEstoque = "";
+
+
+            if (
+                produto.quantidade <= 5
+            ) {
+
+                avisoEstoque = `
+                    <p class="estoque-baixo">
+                        ⚠️ Estoque baixo
+                    </p>
+                `;
+
+            }
+
+
+            // ==========================================
+            // IMAGEM
+            // ==========================================
+
+            let imagem = "";
+
+
+            if (produto.imagem) {
+
+                imagem = `
+                    <img
+                        src="${produto.imagem}"
+                        alt="${produto.nome}"
+                    >
+                `;
+
+            }
+
+
+            // ==========================================
+            // CARD
+            // ==========================================
+
+            card.innerHTML = `
+
+                ${imagem}
+
+                <span class="categoria">
+                    ${produto.categoria}
+                </span>
+
+                <h3>
+                    ${produto.nome}
+                </h3>
+
+                <p>
+                    💰 Preço:
+                    R$ ${Number(produto.preco)
+                        .toFixed(2)
+                        .replace(".", ",")}
                 </p>
-            `;
 
-        }
+                <p>
+                    📦 Quantidade:
+                    ${produto.quantidade}
+                </p>
 
+                ${avisoEstoque}
 
-        // ==========================================
-        // IMAGEM
-        // ==========================================
-
-        let imagem = "";
-
-        if (produto.imagem) {
-
-            imagem = `
-                <img
-                    src="${produto.imagem}"
-                    alt="${produto.nome}"
+                <button
+                    class="botao-excluir"
+                    onclick="excluirProduto(${produto.id})"
                 >
+                    🗑️ Excluir
+                </button>
+
             `;
 
+
+            listaProdutos.appendChild(
+                card
+            );
+
         }
-
-
-        // ==========================================
-        // CARD
-        // ==========================================
-
-        card.innerHTML = `
-
-            ${imagem}
-
-            <span class="categoria">
-                ${produto.categoria}
-            </span>
-
-
-            <h3>
-                ${produto.nome}
-            </h3>
-
-
-            <p>
-                💰 Preço:
-                R$ ${produto.preco
-                    .toFixed(2)
-                    .replace(".", ",")}
-            </p>
-
-
-            <p>
-                📦 Quantidade:
-                ${produto.quantidade}
-            </p>
-
-
-            ${avisoEstoque}
-
-
-            <button
-                class="botao-excluir"
-                onclick="excluirProduto(${produto.id})"
-            >
-                🗑️ Excluir
-            </button>
-
-        `;
-
-
-        listaProdutos.appendChild(card);
-
-    });
+    );
 
 
     atualizarResumo();
+
 }
 
 
 // ==========================================
-// ADICIONAR PRODUTO MANUALMENTE
+// ADICIONAR PRODUTO MANUAL
 // ==========================================
 
 formProduto.addEventListener(
@@ -165,11 +338,16 @@ formProduto.addEventListener(
 
 
         const nome =
-            document.getElementById("nome").value.trim();
+            document
+                .getElementById("nome")
+                .value
+                .trim();
 
 
         const categoria =
-            document.getElementById("categoria").value;
+            document
+                .getElementById("categoria")
+                .value;
 
 
         const preco =
@@ -205,13 +383,15 @@ formProduto.addEventListener(
         };
 
 
-        produtos.push(novoProduto);
+        produtos.push(
+            novoProduto
+        );
 
 
         salvarProdutos();
 
 
-        mostrarProdutos();
+        aplicarFiltro();
 
 
         formProduto.reset();
@@ -221,7 +401,7 @@ formProduto.addEventListener(
 
 
 // ==========================================
-// SALVAR NO LOCALSTORAGE
+// SALVAR
 // ==========================================
 
 function salvarProdutos() {
@@ -235,7 +415,7 @@ function salvarProdutos() {
 
 
 // ==========================================
-// EXCLUIR PRODUTO
+// EXCLUIR
 // ==========================================
 
 function excluirProduto(id) {
@@ -266,13 +446,13 @@ function excluirProduto(id) {
     salvarProdutos();
 
 
-    mostrarProdutos();
+    aplicarFiltro();
 
 }
 
 
 // ==========================================
-// ATUALIZAR RESUMO
+// RESUMO
 // ==========================================
 
 function atualizarResumo() {
@@ -285,7 +465,10 @@ function atualizarResumo() {
         produtos.reduce(
             function(total, produto) {
 
-                return total + produto.quantidade;
+                return (
+                    total +
+                    Number(produto.quantidade)
+                );
 
             },
             0
@@ -300,11 +483,13 @@ function atualizarResumo() {
         produtos.reduce(
             function(total, produto) {
 
-                return total +
+                return (
+                    total +
                     (
-                        produto.preco *
-                        produto.quantidade
-                    );
+                        Number(produto.preco) *
+                        Number(produto.quantidade)
+                    )
+                );
 
             },
             0
@@ -321,97 +506,79 @@ function atualizarResumo() {
 
 
 // ==========================================
-// CARREGAR PRODUTOS DA API
+// CARREGAR API
 // ==========================================
 
 async function carregarProdutosAPI() {
 
     try {
 
-        // Muda o texto do botão
         btnCarregarAPI.textContent =
             "⏳ Carregando...";
 
 
-        btnCarregarAPI.disabled = true;
+        btnCarregarAPI.disabled =
+            true;
 
 
         // ==========================================
-        // CONSULTANDO A DUMMYJSON
+        // REQUISIÇÃO
         // ==========================================
 
         const resposta =
             await fetch(
-                "https://dummyjson.com/products?limit=30"
+                "https://dummyjson.com/products?limit=0"
             );
 
 
-        // Verifica se a API respondeu corretamente
         if (!resposta.ok) {
 
             throw new Error(
-                "Erro ao consultar a API."
+                "A API não respondeu corretamente."
             );
 
         }
 
 
-        // Transforma a resposta em JSON
         const dados =
             await resposta.json();
 
 
         console.log(
-            "Dados recebidos da API:",
-            dados
+            "Produtos recebidos:",
+            dados.products
         );
 
 
         // ==========================================
-        // TRANSFORMANDO OS PRODUTOS
+        // FILTRAR SOMENTE GAMERS
+        // OU TECNOLOGIA
         // ==========================================
 
-        const produtosAPI =
-            dados.products.map(
-                function(produtoAPI) {
+        const produtosInteressantes =
+            dados.products.filter(
+                function(produto) {
 
-                    return {
-
-                        // Cria um ID diferente
-                        // para evitar conflito
-                        id:
-                            100000 +
-                            produtoAPI.id,
-
-                        nome:
-                            produtoAPI.title,
-
-                        categoria:
-                            produtoAPI.category,
-
-                        preco:
-                            produtoAPI.price,
-
-                        quantidade:
-                            produtoAPI.stock,
-
-                        imagem:
-                            produtoAPI.thumbnail,
-
-                        origem:
-                            "API"
-
-                    };
+                    return (
+                        ehProdutoGamer(produto) ||
+                        ehProdutoTecnologia(produto)
+                    );
 
                 }
             );
 
 
+        console.log(
+            "Produtos gamers/tecnologia:",
+            produtosInteressantes
+        );
+
+
         // ==========================================
-        // EVITAR DUPLICADOS
+        // ADICIONAR AO ESTOQUE
         // ==========================================
 
-        produtosAPI.forEach(
+        produtosInteressantes.forEach(
             function(produtoAPI) {
 
                 const jaExiste =
@@ -419,7 +586,7 @@ async function carregarProdutosAPI() {
                         function(produto) {
 
                             return (
-                                produto.id ===
+                                produto.apiId ===
                                 produtoAPI.id
                             );
 
@@ -427,11 +594,44 @@ async function carregarProdutosAPI() {
                     );
 
 
-                if (!jaExiste) {
+                if (jaExiste) {
 
-                    produtos.push(produtoAPI);
+                    return;
 
                 }
+
+
+                produtos.push({
+
+                    id:
+                        1000000 +
+                        produtoAPI.id,
+
+                    apiId:
+                        produtoAPI.id,
+
+                    nome:
+                        produtoAPI.title,
+
+                    categoria:
+                        definirCategoria(
+                            produtoAPI
+                        ),
+
+                    preco:
+                        Number(
+                            produtoAPI.price
+                        ),
+
+                    quantidade:
+                        Number(
+                            produtoAPI.stock
+                        ),
+
+                    imagem:
+                        produtoAPI.thumbnail
+
+                });
 
             }
         );
@@ -448,34 +648,35 @@ async function carregarProdutosAPI() {
         // MOSTRAR
         // ==========================================
 
-        mostrarProdutos();
+        aplicarFiltro();
 
 
         alert(
-            "Produtos carregados da API com sucesso!"
+            `${produtosInteressantes.length} produtos gamers/tecnológicos encontrados!`
         );
 
 
     } catch (erro) {
 
         console.error(
-            "Erro:",
+            "Erro ao consultar API:",
             erro
         );
 
 
         alert(
-            "Não foi possível carregar os produtos da API."
+            "Não foi possível consultar a API. Verifique sua conexão com a internet."
         );
 
 
     } finally {
 
         btnCarregarAPI.textContent =
-            "🌐 Carregar produtos da API";
+            "🌐 Carregar produtos";
 
 
-        btnCarregarAPI.disabled = false;
+        btnCarregarAPI.disabled =
+            false;
 
     }
 
@@ -483,31 +684,93 @@ async function carregarProdutosAPI() {
 
 
 // ==========================================
-// EVENTO DO BOTÃO DA API
+// APLICAR FILTRO
 // ==========================================
 
-btnCarregarAPI.addEventListener(
-    "click",
-    carregarProdutosAPI
-);
+function aplicarFiltro() {
+
+    let lista =
+        [...produtos];
 
 
-// ==========================================
-// BUSCAR PRODUTO
-// ==========================================
+    // ==========================================
+    // FILTRO GAMERS
+    // ==========================================
 
-busca.addEventListener(
-    "input",
-    function() {
+    if (
+        filtroAtual === "gamers"
+    ) {
 
-        const texto =
-            busca.value
-                .toLowerCase()
-                .trim();
+        lista =
+            lista.filter(
+                function(produto) {
+
+                    return (
+                        produto.categoria ===
+                        "Gamers"
+                    );
+
+                }
+            );
+
+        textoFiltro.textContent =
+            "Produtos gamers";
+
+    }
 
 
-        const produtosFiltrados =
-            produtos.filter(
+    // ==========================================
+    // FILTRO TECNOLOGIA
+    // ==========================================
+
+    else if (
+        filtroAtual === "tecnologia"
+    ) {
+
+        lista =
+            lista.filter(
+                function(produto) {
+
+                    return (
+                        produto.categoria ===
+                        "Tecnologia"
+                    );
+
+                }
+            );
+
+        textoFiltro.textContent =
+            "Produtos de tecnologia";
+
+    }
+
+
+    // ==========================================
+    // TODOS
+    // ==========================================
+
+    else {
+
+        textoFiltro.textContent =
+            "Todos os produtos";
+
+    }
+
+
+    // ==========================================
+    // BUSCA
+    // ==========================================
+
+    const texto =
+        busca.value
+            .toLowerCase()
+            .trim();
+
+
+    if (texto !== "") {
+
+        lista =
+            lista.filter(
                 function(produto) {
 
                     return produto.nome
@@ -517,17 +780,125 @@ busca.addEventListener(
                 }
             );
 
+    }
 
-        mostrarProdutos(
-            produtosFiltrados
+
+    mostrarProdutos(lista);
+
+}
+
+
+// ==========================================
+// BOTÕES DE FILTRO
+// ==========================================
+
+btnTodos.addEventListener(
+    "click",
+    function() {
+
+        filtroAtual =
+            "todos";
+
+
+        btnTodos.classList.add(
+            "ativo"
         );
+
+        btnGamers.classList.remove(
+            "ativo"
+        );
+
+        btnTecnologia.classList.remove(
+            "ativo"
+        );
+
+
+        aplicarFiltro();
+
+    }
+);
+
+
+btnGamers.addEventListener(
+    "click",
+    function() {
+
+        filtroAtual =
+            "gamers";
+
+
+        btnGamers.classList.add(
+            "ativo"
+        );
+
+        btnTodos.classList.remove(
+            "ativo"
+        );
+
+        btnTecnologia.classList.remove(
+            "ativo"
+        );
+
+
+        aplicarFiltro();
+
+    }
+);
+
+
+btnTecnologia.addEventListener(
+    "click",
+    function() {
+
+        filtroAtual =
+            "tecnologia";
+
+
+        btnTecnologia.classList.add(
+            "ativo"
+        );
+
+        btnTodos.classList.remove(
+            "ativo"
+        );
+
+        btnGamers.classList.remove(
+            "ativo"
+        );
+
+
+        aplicarFiltro();
 
     }
 );
 
 
 // ==========================================
-// INICIAR SISTEMA
+// BUSCA
+// ==========================================
+
+busca.addEventListener(
+    "input",
+    function() {
+
+        aplicarFiltro();
+
+    }
+);
+
+
+// ==========================================
+// BOTÃO DA API
+// ==========================================
+
+btnCarregarAPI.addEventListener(
+    "click",
+    carregarProdutosAPI
+);
+
+
+// ==========================================
+// INICIAR
 // ==========================================
 
 mostrarProdutos();

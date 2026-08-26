@@ -4,23 +4,29 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>EstoqueGamer</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
 
 <body>
 
-    <!-- =========================
+    <!-- ==========================================
          CABEÇALHO
-    ========================== -->
+    =========================================== -->
 
     <header class="cabecalho">
 
         <div class="logo">
-            EstoqueGamer
+            🎮 EstoqueGamer
         </div>
 
     </header>
@@ -28,25 +34,27 @@
 
     <main class="container">
 
-        <!-- =========================
+        <!-- ==========================================
              INTRODUÇÃO
-        ========================== -->
+        =========================================== -->
 
         <section class="introducao">
 
-            <h1>Controle de Estoque</h1>
+            <h1>
+                Controle de Estoque
+            </h1>
 
             <p>
-                Cadastre, consulte e importe produtos
-                utilizando uma API.
+                Gerencie produtos gamers e tecnológicos
+                de forma simples.
             </p>
 
         </section>
 
 
-        <!-- =========================
-             RESUMO DO ESTOQUE
-        ========================== -->
+        <!-- ==========================================
+             RESUMO
+        =========================================== -->
 
         <section class="resumo">
 
@@ -115,9 +123,9 @@
         </section>
 
 
-        <!-- =========================
+        <!-- ==========================================
              API
-        ========================== -->
+        =========================================== -->
 
         <section class="area-api">
 
@@ -128,31 +136,65 @@
                 </h2>
 
                 <p>
-                    Importe produtos da DummyJSON
-                    para o seu estoque.
+                    Carregue produtos gamers e tecnológicos
+                    automaticamente.
                 </p>
 
             </div>
+
 
             <button
                 id="btnCarregarAPI"
                 class="botao-api"
             >
-                🌐 Carregar produtos da API
+                🌐 Carregar produtos
             </button>
 
         </section>
 
 
-        <!-- =========================
+        <!-- ==========================================
+             FILTROS
+        =========================================== -->
+
+        <section class="filtros">
+
+            <button
+                id="btnTodos"
+                class="botao-filtro ativo"
+            >
+                Todos
+            </button>
+
+
+            <button
+                id="btnGamers"
+                class="botao-filtro"
+            >
+                🎮 Gamers
+            </button>
+
+
+            <button
+                id="btnTecnologia"
+                class="botao-filtro"
+            >
+                💻 Tecnologia
+            </button>
+
+        </section>
+
+
+        <!-- ==========================================
              CADASTRO
-        ========================== -->
+        =========================================== -->
 
         <section class="area-cadastro">
 
             <h2>
                 Adicionar produto
             </h2>
+
 
             <form id="formProduto">
 
@@ -185,6 +227,14 @@
 
                         <option value="">
                             Selecione uma categoria
+                        </option>
+
+                        <option value="Gamers">
+                            Gamers
+                        </option>
+
+                        <option value="Tecnologia">
+                            Tecnologia
                         </option>
 
                         <option value="Eletrônicos">
@@ -259,9 +309,9 @@
         </section>
 
 
-        <!-- =========================
+        <!-- ==========================================
              PRODUTOS
-        ========================== -->
+        =========================================== -->
 
         <section class="area-produtos">
 
@@ -273,11 +323,12 @@
                         Produtos cadastrados
                     </h2>
 
-                    <p>
-                        Consulte os produtos disponíveis.
+                    <p id="textoFiltro">
+                        Todos os produtos
                     </p>
 
                 </div>
+
 
                 <input
                     type="text"
@@ -293,11 +344,6 @@
                 class="lista-produtos"
             >
 
-                <!--
-                    Os produtos aparecem aqui
-                    através do JavaScript
-                -->
-
             </div>
 
         </section>
@@ -305,14 +351,14 @@
     </main>
 
 
-    <!-- =========================
+    <!-- ==========================================
          RODAPÉ
-    ========================== -->
+    =========================================== -->
 
     <footer>
 
         <p>
-            Estoque Fácil • Projeto acadêmico ADS
+            Estoque Gamer • Projeto acadêmico ADS
         </p>
 
     </footer>
