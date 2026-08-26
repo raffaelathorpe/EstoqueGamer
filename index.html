@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
 
@@ -12,67 +13,146 @@
 
 <body>
 
+    <!-- =========================
+         CABEÇALHO
+    ========================== -->
+
     <header class="cabecalho">
+
         <div class="logo">
-             EstoqueGamer
+            EstoqueGamer
         </div>
 
-        
     </header>
 
 
     <main class="container">
 
+        <!-- =========================
+             INTRODUÇÃO
+        ========================== -->
+
         <section class="introducao">
+
             <h1>Controle de Estoque</h1>
 
             <p>
-                Cadastre e acompanhe seus produtos de forma simples.
+                Cadastre, consulte e importe produtos
+                utilizando uma API.
             </p>
+
         </section>
 
 
-        <!-- RESUMO DO ESTOQUE -->
+        <!-- =========================
+             RESUMO DO ESTOQUE
+        ========================== -->
 
         <section class="resumo">
 
             <div class="card-resumo">
-                <span class="icone">📦</span>
+
+                <span class="icone">
+                    📦
+                </span>
 
                 <div>
-                    <p>Produtos</p>
-                    <strong id="totalProdutos">0</strong>
+
+                    <p>
+                        Produtos
+                    </p>
+
+                    <strong id="totalProdutos">
+                        0
+                    </strong>
+
                 </div>
+
             </div>
 
 
             <div class="card-resumo">
-                <span class="icone">🔢</span>
+
+                <span class="icone">
+                    🔢
+                </span>
 
                 <div>
-                    <p>Itens em estoque</p>
-                    <strong id="totalItens">0</strong>
+
+                    <p>
+                        Itens em estoque
+                    </p>
+
+                    <strong id="totalItens">
+                        0
+                    </strong>
+
                 </div>
+
             </div>
 
 
             <div class="card-resumo">
-                <span class="icone">💰</span>
+
+                <span class="icone">
+                    💰
+                </span>
 
                 <div>
-                    <p>Valor do estoque</p>
-                    <strong id="valorEstoque">R$ 0,00</strong>
+
+                    <p>
+                        Valor do estoque
+                    </p>
+
+                    <strong id="valorEstoque">
+                        R$ 0,00
+                    </strong>
+
                 </div>
+
             </div>
 
         </section>
 
 
-        <!-- CADASTRO -->
+        <!-- =========================
+             API
+        ========================== -->
+
+        <section class="area-api">
+
+            <div>
+
+                <h2>
+                    Produtos da API
+                </h2>
+
+                <p>
+                    Importe produtos da DummyJSON
+                    para o seu estoque.
+                </p>
+
+            </div>
+
+            <button
+                id="btnCarregarAPI"
+                class="botao-api"
+            >
+                🌐 Carregar produtos da API
+            </button>
+
+        </section>
+
+
+        <!-- =========================
+             CADASTRO
+        ========================== -->
 
         <section class="area-cadastro">
 
-            <h2>Adicionar produto</h2>
+            <h2>
+                Adicionar produto
+            </h2>
 
             <form id="formProduto">
 
@@ -98,7 +178,10 @@
                         Categoria
                     </label>
 
-                    <select id="categoria" required>
+                    <select
+                        id="categoria"
+                        required
+                    >
 
                         <option value="">
                             Selecione uma categoria
@@ -164,7 +247,10 @@
                 </div>
 
 
-                <button type="submit" class="botao-adicionar">
+                <button
+                    type="submit"
+                    class="botao-adicionar"
+                >
                     ➕ Adicionar produto
                 </button>
 
@@ -173,18 +259,24 @@
         </section>
 
 
-        <!-- PRODUTOS -->
+        <!-- =========================
+             PRODUTOS
+        ========================== -->
 
         <section class="area-produtos">
 
             <div class="titulo-produtos">
 
                 <div>
-                    <h2>Produtos cadastrados</h2>
+
+                    <h2>
+                        Produtos cadastrados
+                    </h2>
 
                     <p>
                         Consulte os produtos disponíveis.
                     </p>
+
                 </div>
 
                 <input
@@ -196,9 +288,15 @@
             </div>
 
 
-            <div id="listaProdutos" class="lista-produtos">
+            <div
+                id="listaProdutos"
+                class="lista-produtos"
+            >
 
-                <!-- Os produtos aparecerão aqui através do JavaScript -->
+                <!--
+                    Os produtos aparecem aqui
+                    através do JavaScript
+                -->
 
             </div>
 
@@ -206,6 +304,10 @@
 
     </main>
 
+
+    <!-- =========================
+         RODAPÉ
+    ========================== -->
 
     <footer>
 
@@ -219,4 +321,5 @@
     <script src="script.js"></script>
 
 </body>
+
 </html>
