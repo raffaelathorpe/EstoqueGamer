@@ -30,7 +30,7 @@ Sistema de controle de estoque para produtos gamers e tecnológicos desenvolvido
 ## 🚀 Como testar
 
 ### Online (GitHub Pages)
-Acesse: https://SEU-USUARIO.github.io/EstoqueGamer/
+Acesse: [Link do site](https://raffaelathorpe.github.io/EstoqueGamer/)
 
 ### Localmente
 1. Clone o repositório:
