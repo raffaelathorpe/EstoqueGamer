@@ -35,4 +35,4 @@ Acesse: [Link do site](https://raffaelathorpe.github.io/EstoqueGamer/)
 ### Localmente
 1. Clone o repositório:
 ```bash
-git clone https://github.com/SEU-USUARIO/EstoqueGamer.git
+git clone https://github.com/raffaelathorpe/EstoqueGamer.git
