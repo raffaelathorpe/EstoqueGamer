@@ -896,9 +896,346 @@ btnCarregarAPI.addEventListener(
     carregarProdutosAPI
 );
 
+// ==========================================
+// GEOLOCALIZAÇÃO - VERSÃO MELHORADA
+// ==========================================
+
+const btnLocalizacao =
+    document.getElementById("btnLocalizacao");
+
+const resultadoLocalizacao =
+    document.getElementById("resultadoLocalizacao");
+
+const linkGoogleMaps =
+    document.getElementById("linkGoogleMaps");
+
+// Variáveis para armazenar a localização
+let latitudeAtual = null;
+let longitudeAtual = null;
+let precisaoAtual = null;
+
+btnLocalizacao.addEventListener(
+    "click",
+    function() {
+
+        // ==========================================
+        // VERIFICA SE O NAVEGADOR SUPORTA
+        // ==========================================
+
+        if (!navigator.geolocation) {
+
+            resultadoLocalizacao.innerHTML = `
+                <p class="erro">
+                    ❌ Seu navegador não suporta geolocalização.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        // ==========================================
+        // ESTADO DE CARREGAMENTO
+        // ==========================================
+
+        resultadoLocalizacao.innerHTML = `
+            <p class="carregando">
+                ⏳ Obtendo sua localização...
+                <br>
+                <small>Por favor, aguarde...</small>
+            </p>
+        `;
+
+        btnLocalizacao.disabled = true;
+        btnLocalizacao.textContent = "⏳ Obtendo...";
+
+        linkGoogleMaps.style.display = "none";
+
+
+        // ==========================================
+        // OBTENDO A LOCALIZAÇÃO
+        // ==========================================
+
+        navigator.geolocation.getCurrentPosition(
+
+            // ==========================================
+            // SUCESSO
+            // ==========================================
+
+            function(posicao) {
+
+                latitudeAtual =
+                    posicao.coords.latitude;
+
+                longitudeAtual =
+                    posicao.coords.longitude;
+
+                precisaoAtual =
+                    posicao.coords.accuracy;
+
+
+                // ==========================================
+                // MOSTRA NO ECRÃ
+                // ==========================================
+
+                resultadoLocalizacao.innerHTML = `
+                    <p class="sucesso">✅ Localização obtida com sucesso!</p>
+                    <p><strong>Latitude:</strong> ${latitudeAtual}</p>
+                    <p><strong>Longitude:</strong> ${longitudeAtual}</p>
+                    <p><strong>Precisão:</strong> ${Math.round(precisaoAtual)} metros</p>
+                    <p><strong>Altitude:</strong> ${posicao.coords.altitude || 'Não disponível'}</p>
+                    <p><strong>Velocidade:</strong> ${posicao.coords.speed || 'Não disponível'}</p>
+                `;
+
+                // ==========================================
+                // EXIBE BOTÃO DO MAPS
+                // ==========================================
+
+                linkGoogleMaps.style.display = "inline-block";
+
+                linkGoogleMaps.href = 
+                    `https://www.google.com/maps?q=${latitudeAtual},${longitudeAtual}`;
+
+                // ==========================================
+                // SALVA NO LOCALSTORAGE
+                // ==========================================
+
+                const localizacao = {
+                    latitude: latitudeAtual,
+                    longitude: longitudeAtual,
+                    precisao: precisaoAtual,
+                    data: new Date().toISOString()
+                };
+
+                localStorage.setItem(
+                    "localizacao_estoque",
+                    JSON.stringify(localizacao)
+                );
+
+                console.log(
+                    "📍 Localização salva:",
+                    localizacao
+                );
+
+            },
+
+            // ==========================================
+            // ERRO
+            // ==========================================
+
+            function(erro) {
+
+                console.error(
+                    "Erro de geolocalização:",
+                    erro
+                );
+
+                let mensagem = "";
+
+                if (erro.code === 1) {
+
+                    mensagem = `
+                        ❌ Permissão de localização negada.
+                        <br>
+                        <small>
+                            Por favor, permita o acesso à localização nas configurações do seu navegador.
+                        </small>
+                    `;
+
+                }
+
+                else if (erro.code === 2) {
+
+                    mensagem = `
+                        ❌ Não foi possível determinar sua localização.
+                        <br>
+                        <small>
+                            Verifique se o GPS está ativo e tente novamente.
+                        </small>
+                    `;
+
+                }
+
+                else if (erro.code === 3) {
+
+                    mensagem = `
+                        ❌ O tempo para obter a localização terminou.
+                        <br>
+                        <small>
+                            Tente novamente ou verifique sua conexão.
+                        </small>
+                    `;
+
+                }
+
+                else {
+
+                    mensagem = `
+                        ❌ Erro ao obter localização.
+                        <br>
+                        <small>
+                            Código do erro: ${erro.code}
+                        </small>
+                    `;
+
+                }
+
+                resultadoLocalizacao.innerHTML = 
+                    `<p class="erro">${mensagem}</p>`;
+
+            },
+
+            // ==========================================
+            // OPÇÕES
+            // ==========================================
+
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            }
+
+        );
+
+    }
+);
+
+// ==========================================
+// FINALIZAR O BOTÃO
+// ==========================================
+
+// Restaura o botão após a operação
+btnLocalizacao.addEventListener(
+    "click",
+    function() {
+
+        // Define um timeout para restaurar o botão
+        // mesmo que a geolocalização demore
+        setTimeout(function() {
+
+            btnLocalizacao.disabled = false;
+            btnLocalizacao.textContent = "📍 Obter minha localização";
+
+        }, 16000);
+
+    }
+);
+
+// ==========================================
+// CARREGA LOCALIZAÇÃO SALVA
+// ==========================================
+
+(function carregarLocalizacaoSalva() {
+
+    const salva =
+        localStorage.getItem("localizacao_estoque");
+
+    if (salva) {
+
+        try {
+
+            const dados =
+                JSON.parse(salva);
+
+            const dataFormatada =
+                new Date(dados.data)
+                    .toLocaleString("pt-BR");
+
+            resultadoLocalizacao.innerHTML = `
+                <p class="sucesso">📍 Última localização salva:</p>
+                <p><strong>Latitude:</strong> ${dados.latitude}</p>
+                <p><strong>Longitude:</strong> ${dados.longitude}</p>
+                <p><strong>Precisão:</strong> ${Math.round(dados.precisao)} metros</p>
+                <p><small>Salvo em: ${dataFormatada}</small></p>
+            `;
+
+            linkGoogleMaps.style.display = "inline-block";
+            linkGoogleMaps.href = 
+                `https://www.google.com/maps?q=${dados.latitude},${dados.longitude}`;
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao carregar localização salva:",
+                erro
+            );
+
+        }
+
+    }
+
+})();
+
+// ==========================================
+// ATUALIZA O SERVICE WORKER
+// ==========================================
+
+// Adicione ao final do seu script ou no evento de carregamento
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", function() {
+
+        navigator.serviceWorker
+            .register("./service-worker.js")
+            .then(function(registro) {
+
+                console.log(
+                    "✅ Service Worker registrado com sucesso!",
+                    registro
+                );
+
+                // Verifica se há atualizações
+                registro.update();
+
+            })
+            .catch(function(erro) {
+
+                console.error(
+                    "❌ Erro ao registrar Service Worker:",
+                    erro
+                );
+
+            });
+
+    });
+
+}
+
 
 // ==========================================
 // INICIAR
 // ==========================================
 
 mostrarProdutos();
+
+// ==========================================
+// SERVICE WORKER
+// ==========================================
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", function() {
+
+        navigator.serviceWorker
+            .register("./service-worker.js")
+            .then(function(registro) {
+
+                console.log(
+                    "Service Worker registrado com sucesso!",
+                    registro
+                );
+
+            })
+            .catch(function(erro) {
+
+                console.error(
+                    "Erro ao registrar Service Worker:",
+                    erro
+                );
+
+            });
+
+    });
+
+}
